@@ -23,15 +23,6 @@ void main() async {
     version: 1,
   );
 
-  Future<void> insertDog(Dog dog) async {
-    final Database db = await database;
-    await db.insert(
-      'dogs',
-      dog.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
   Future<List<Dog>> dogs() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('dogs');
@@ -44,39 +35,6 @@ void main() async {
     });
   }
 
-  Future<void> updateDog(Dog dog) async {
-    final db = await database;
-    await db.update(
-      'dogs',
-      dog.toMap(),
-      where: "id = ?",
-      whereArgs: [dog.id],
-    );
-  }
-
-  Future<void> deleteDog(int id) async {
-    final db = await database;
-    await db.delete(
-      'dogs',
-      where: "id = ?",
-      whereArgs: [id],
-    );
-  }
-
-  var fido = Dog(
-    id: 0,
-    name: 'Fido',
-    age: 35,
-  );
-
-  await insertDog(fido);
-  print(await dogs());
-
-  fido = Dog(
-    id: fido.id,
-    name: fido.name,
-    age: fido.age + 7,
-  );
   final dogList = await dogs();
 
   runApp(
