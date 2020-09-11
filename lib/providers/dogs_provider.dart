@@ -14,7 +14,6 @@ class DogsProvider with ChangeNotifier {
     return dogs.first;
   }
 
-  // getter for all chats
   List<Dog> get chatsList {
     return [...dogs];
   }
@@ -29,28 +28,19 @@ class DogsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-//  Future<void> updateChat(int id, Chat newChat) async {
-//    final chatIndex = chats.indexWhere((ch) => ch.id == id);
-//
-//    chats[chatIndex] = newChat;
-//    notifyListeners();
-//  }
-//
-//  Future<void> deleteChat(int id) async {
-//    final existingChatIndex = chats.indexWhere((chat) => chat.id == id);
-//    chats.removeAt(existingChatIndex);
-//    notifyListeners();
-//  }
-//
-//  Future<void> deleteRoomChats(int chatRoomId) async {
-//    final chatList =
-//    chats.where((element) => element.roomId == chatRoomId).toList();
-//
-//    for (int i = 0; i < chatList.length; i++) {
-//      final existingChatIndex =
-//      chatList.indexWhere((chat) => chat.roomId == chatRoomId);
-//      chatList.removeAt(existingChatIndex);
-//    }
-//    notifyListeners();
-//  }
+  Future<void> updateDog(
+    int id,
+    Dog newDog,
+  ) async {
+    final index = dogs.indexWhere((dog) => dog.id == id);
+
+    dogs[index] = newDog;
+    notifyListeners();
+  }
+
+  Future<void> deleteDog(int id) async {
+    final existingDogIndex = dogs.indexWhere((dog) => dog.id == id);
+    dogs.removeAt(existingDogIndex);
+    notifyListeners();
+  }
 }

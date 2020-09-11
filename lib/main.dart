@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_demo/models/dog.dart';
 import 'package:sqflite_demo/pages/pages.dart';
+import 'package:sqflite_demo/providers/database_provider.dart';
 import 'package:sqflite_demo/providers/dogs_provider.dart';
 
 void main() async {
@@ -84,6 +85,11 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => DogsProvider(
             dogs: dogList,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DataBaseProvider(
+            database: database,
           ),
         ),
       ],
