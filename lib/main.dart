@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_demo/models/dog.dart';
 import 'package:sqflite_demo/pages/pages.dart';
+import 'package:sqflite_demo/providers/dogs_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,16 +76,19 @@ void main() async {
     name: fido.name,
     age: fido.age + 7,
   );
-  await updateDog(fido);
-
-  print(await dogs());
-
-  await deleteDog(fido.id);
-
-  print(await dogs());
+  final dogList = await dogs();
 
   runApp(
-    MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => DogsProvider(
+            dogs: dogList,
+          ),
+        ),
+      ],
+      child: MyApp(),
+    ),
   );
 }
 
@@ -93,6 +98,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'sqflite demo',
       home: HomeScreen(),
+      routes: {
+        HomeScreen.routeName: (context) => HomeScreen(),
+      },
     );
   }
 }
