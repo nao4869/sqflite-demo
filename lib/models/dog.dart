@@ -3,20 +3,27 @@ class Dog {
   final String name;
   final int age;
 
-  Dog({this.id, this.name, this.age});
+  // 追加分
+  final String imagePath;
+
+  Dog({
+    this.id,
+    this.name,
+    this.age,
+    this.imagePath,
+  });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'age': age,
+      'imagePath': imagePath,
     };
   }
 
-  // Implement toString to make it easier to see information about
-  // each dog when using the print statement.
   @override
   String toString() {
-    return 'Dog{id: $id, name: $name, age: $age}';
+    return 'Dog{id: $id, name: $name, age: $age, imagePath: $imagePath}';
   }
 }

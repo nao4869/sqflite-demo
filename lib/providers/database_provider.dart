@@ -30,6 +30,7 @@ class DataBaseProvider with ChangeNotifier {
         id: maps[i]['id'],
         name: maps[i]['name'],
         age: maps[i]['age'],
+        imagePath: maps[i]['imagePath'],
       );
     });
   }

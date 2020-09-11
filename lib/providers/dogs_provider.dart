@@ -23,6 +23,7 @@ class DogsProvider with ChangeNotifier {
       id: dog.id,
       name: dog.name,
       age: dog.age,
+      imagePath: dog.imagePath,
     );
     dogs.add(newDog);
     notifyListeners();

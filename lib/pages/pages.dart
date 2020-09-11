@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite_demo/Utility/utility.dart';
 import 'package:sqflite_demo/models/dog.dart';
 import 'package:sqflite_demo/providers/database_provider.dart';
 import 'package:sqflite_demo/providers/dogs_provider.dart';
@@ -16,8 +21,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final databaseNotifier = Provider.of<DataBaseProvider>(context);
-    final dbInstance = databaseNotifier.getDatabaseInfo();
     final dogsNotifier = Provider.of<DogsProvider>(context);
     final dogs = dogsNotifier.dogs;
     return Scaffold(
@@ -28,12 +33,24 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (BuildContext context, int index) {
           return Card(
             child: ListTile(
-              dense: true,
+              //dense: true,
               leading: Text(
                 dogs[index].id.toString(),
               ),
-              title: Text(
-                dogs[index].name + ' ' + dogs[index].age.toString() + '歳',
+              title: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  dogs[index].name + ' ' + dogs[index].age.toString() + '歳',
+                ),
+              ),
+              subtitle: SizedBox(
+                width: size.width * .8,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Utility.imageFromBase64String(
+                    dogs[index].imagePath,
+                  ),
+                ),
               ),
               trailing: Icon(Icons.more_vert),
               onTap: () {
@@ -65,11 +82,37 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          final time = DateTime.now().millisecondsSinceEpoch;
+          var imageFile;
+          var imageString;
+          final picker = ImagePicker();
+          final pickedFile = await picker.getImage(
+            source: ImageSource.gallery,
+            maxHeight: 600,
+            maxWidth: 800,
+          );
+          if (pickedFile == null) return;
+          imageFile = File(pickedFile.path);
+
+          if (imageFile != null) {
+            final Directory directory =
+                await getApplicationDocumentsDirectory();
+            final String path = directory.path;
+            final File newImage = await imageFile.copy('$path/$time.png');
+
+            setState(() {
+              imageFile = newImage;
+            });
+
+            imageString = Utility.base64String(imageFile.readAsBytesSync());
+          }
+
           final dog = Dog(
             id: dogs.length,
             name: 'dog name',
             age: 10,
+            imagePath: imageString,
           );
 
           // データベースへ保存 - 挿入

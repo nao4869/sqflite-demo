@@ -17,7 +17,7 @@ void main() async {
     join(await getDatabasesPath(), 'doggie_database.db'),
     onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)",
+        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER, imagePath TEXT)",
       );
     },
     version: 1,
@@ -31,6 +31,7 @@ void main() async {
         id: maps[i]['id'],
         name: maps[i]['name'],
         age: maps[i]['age'],
+        imagePath: maps[i]['imagePath'],
       );
     });
   }
