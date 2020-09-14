@@ -17,7 +17,7 @@ void main() async {
     join(await getDatabasesPath(), 'doggie_database.db'),
     onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER, imagePath TEXT)",
+        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER, imagePath TEXT, createdAt TEXT)",
       );
     },
     version: 1,
@@ -25,13 +25,14 @@ void main() async {
 
   Future<List<Dog>> dogs() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('dogs');
+    final List<Map<String, dynamic>> maps = await db.query('dogs', orderBy: "createdAt DESC");
     return List.generate(maps.length, (i) {
       return Dog(
         id: maps[i]['id'],
         name: maps[i]['name'],
         age: maps[i]['age'],
         imagePath: maps[i]['imagePath'],
+        createdAt: maps[i]['createdAt'],
       );
     });
   }

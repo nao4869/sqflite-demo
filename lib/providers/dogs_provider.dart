@@ -14,7 +14,9 @@ class DogsProvider with ChangeNotifier {
     return dogs.first;
   }
 
-  List<Dog> get chatsList {
+  List<Dog> get dogsList {
+    // 新規投稿作成時に、作成日が新しい順番でソートされたリストを返却
+    dogs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return [...dogs];
   }
 
@@ -24,6 +26,7 @@ class DogsProvider with ChangeNotifier {
       name: dog.name,
       age: dog.age,
       imagePath: dog.imagePath,
+      createdAt: dog.createdAt,
     );
     dogs.add(newDog);
     notifyListeners();

@@ -24,13 +24,14 @@ class DataBaseProvider with ChangeNotifier {
 
   Future<List<Dog>> dogs() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('dogs');
+    final List<Map<String, dynamic>> maps = await db.query('dogs', orderBy: "createdAt DESC");
     return List.generate(maps.length, (i) {
       return Dog(
         id: maps[i]['id'],
         name: maps[i]['name'],
         age: maps[i]['age'],
         imagePath: maps[i]['imagePath'],
+        createdAt: maps[i]['createdAt'],
       );
     });
   }

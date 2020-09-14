@@ -24,31 +24,42 @@ class _HomeScreenState extends State<HomeScreen> {
     final size = MediaQuery.of(context).size;
     final databaseNotifier = Provider.of<DataBaseProvider>(context);
     final dogsNotifier = Provider.of<DogsProvider>(context);
-    final dogs = dogsNotifier.dogs;
     return Scaffold(
       appBar: AppBar(),
       body: ListView.builder(
         shrinkWrap: true,
-        itemCount: dogs.length,
+        itemCount: dogsNotifier.dogsList.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
             child: ListTile(
               //dense: true,
               leading: Text(
-                dogs[index].id.toString(),
+                dogsNotifier.dogsList[index].id.toString(),
               ),
-              title: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  dogs[index].name + ' ' + dogs[index].age.toString() + '歳',
-                ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        dogsNotifier.dogsList[index].name,
+                      ),
+                      Text(
+                        dogsNotifier.dogsList[index].age.toString() + '歳',
+                      ),
+                    ],
+                  ),
+                  Text(
+                    dogsNotifier.dogsList[index].createdAt,
+                  ),
+                ],
               ),
               subtitle: SizedBox(
                 width: size.width * .8,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Utility.imageFromBase64String(
-                    dogs[index].imagePath,
+                    dogsNotifier.dogsList[index].imagePath,
                   ),
                 ),
               ),
@@ -62,8 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         SimpleDialogOption(
                           onPressed: () {
                             // データベース更新
-                            databaseNotifier.deleteDog(dogs[index].id);
-                            dogsNotifier.deleteDog(dogs[index].id);
+                            databaseNotifier
+                                .deleteDog(dogsNotifier.dogsList[index].id);
+                            dogsNotifier
+                                .deleteDog(dogsNotifier.dogsList[index].id);
                             Navigator.pop(context);
                           },
                           child: Center(child: Text('削除')),
@@ -109,15 +122,17 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           final dog = Dog(
-            id: dogs.length,
+            id: dogsNotifier.dogsList.length,
             name: 'dog name',
             age: 10,
             imagePath: imageString,
+            createdAt: DateTime.now().toIso8601String(),
           );
 
           // データベースへ保存 - 挿入
           databaseNotifier.insertDog(dog);
           dogsNotifier.addDog(dog);
+          setState(() {});
         },
         child: const Icon(Icons.add),
       ),
