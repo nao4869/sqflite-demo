@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_demo/models/dog.dart';
+import 'package:sqflite_demo/models/todo.dart';
 
 class DataBaseProvider with ChangeNotifier {
   DataBaseProvider({
@@ -13,46 +13,47 @@ class DataBaseProvider with ChangeNotifier {
     return database;
   }
 
-  Future<void> insertDog(Dog dog) async {
-    final Database db = await database;
+  Future<void> insertTodo(Todo todo) async {
+    final db = await database;
     await db.insert(
-      'dogs',
-      dog.toMap(),
+      'todo',
+      todo.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<Dog>> dogs() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('dogs', orderBy: "createdAt DESC");
+  Future<List<Todo>> getTodo() async {
+    final db = await database;
+    final maps = await db.query(
+      'todo',
+      orderBy: 'createdAt DESC',
+    );
     return List.generate(maps.length, (i) {
-      return Dog(
+      return Todo(
         id: maps[i]['id'],
         name: maps[i]['name'],
-        age: maps[i]['age'],
         imagePath: maps[i]['imagePath'],
         createdAt: maps[i]['createdAt'],
       );
     });
   }
 
-  Future<void> updateDog(Dog dog) async {
+  Future<void> updateDog(Todo todo) async {
     final db = await database;
     await db.update(
-      'dogs',
-      dog.toMap(),
-      where: "id = ?",
-      whereArgs: [dog.id],
+      'todo',
+      todo.toMap(),
+      where: 'id = ?',
+      whereArgs: [todo.id],
     );
   }
 
   Future<void> deleteDog(int id) async {
     final db = await database;
     await db.delete(
-      'dogs',
-      where: "id = ?",
+      'todo',
+      where: 'id = ?',
       whereArgs: [id],
     );
   }
-
 }

@@ -6,45 +6,44 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_demo/models/dog.dart';
-import 'package:sqflite_demo/pages/pages.dart';
+import 'package:sqflite_demo/models/todo.dart';
+import 'package:sqflite_demo/pages/home_screen.dart';
 import 'package:sqflite_demo/providers/database_provider.dart';
-import 'package:sqflite_demo/providers/dogs_provider.dart';
+import 'package:sqflite_demo/providers/todo_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final Future<Database> database = openDatabase(
-    join(await getDatabasesPath(), 'doggie_database.db'),
+  final database = openDatabase(
+    join(await getDatabasesPath(), 'todo_database.db'),
     onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER, imagePath TEXT, createdAt TEXT)",
+        'CREATE TABLE todo(id INTEGER PRIMARY KEY, name TEXT, imagePath TEXT, createdAt TEXT)',
       );
     },
     version: 1,
   );
 
-  Future<List<Dog>> dogs() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('dogs', orderBy: "createdAt DESC");
+  Future<List<Todo>> getTodoList() async {
+    final db = await database;
+    final maps = await db.query('todo', orderBy: 'createdAt DESC');
     return List.generate(maps.length, (i) {
-      return Dog(
+      return Todo(
         id: maps[i]['id'],
         name: maps[i]['name'],
-        age: maps[i]['age'],
         imagePath: maps[i]['imagePath'],
         createdAt: maps[i]['createdAt'],
       );
     });
   }
 
-  final dogList = await dogs();
+  final todoList = await getTodoList();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => DogsProvider(
-            dogs: dogList,
+          create: (_) => TodoProvider(
+            todoList: todoList,
           ),
         ),
         ChangeNotifierProvider(
@@ -62,7 +61,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'sqflite demo',
+      debugShowCheckedModeBanner: false,
+      title: 'sqlite demo',
       home: HomeScreen(),
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
