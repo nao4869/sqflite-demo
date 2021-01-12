@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'sqlite demo',
+      title: 'SQLite demo',
       home: HomeScreen(),
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
